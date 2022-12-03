@@ -25,6 +25,29 @@ catch (err) {
   }
 });
 
+app.get("/employees/:id", async (req, res) => {
+    const { id } = req.params;
+    const employee = await Employee.findById(id);
+    try{
+        return res.status(200).json(employee, { message: 'employee found'});
+
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'could not find employee'});
+      }
+});
+app.delete("/employees/:id", async (req, res) => {
+    const { id } = req.params;
+    const employee = await Employee.findByIdAndDelete(id);
+    try{
+        return res.status(200).json(employee, { message: 'employee deleted'});
+
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'could not delete employee'});
+      }
+});
+
 const start = async () => {
     try {
       await mongoose.connect(
