@@ -1,27 +1,28 @@
 const express = require('express')
+const cors = require('cors')
 const mongoose = require('mongoose')
-
 const { Employee } =require('./model.js')
 
 const app = express()
 const port = 3000
 const DB_URL = 'mongodb+srv://mehrad72:yZCk4KpLViZgXQP5@data-base.6fusqhj.mongodb.net/?retryWrites=true&w=majority';
-app.use(express.json());
-
+app.use(express.json(), cors());
 
 app.get("/employees", async (req, res) => {
     const employees = await Employee.find();
+    console.log(employees);
     return res.status(200).json(employees);
   });
 
 app.post("/employees", async (req, res) => {
 try{
     const addEmployee = new Employee({ ...req.body });
-    const added = await addEmployee.save();
-    return res.status(201).json(added);
+    const add = await addEmployee.save();
+    console.log(add)
+    return res.status(201).json(add);
 }
 catch (err) {
-    return res.status(500).json({ message: 'could not add employee'});
+    return res.status(500).json(err);
   }
 });
 
@@ -37,14 +38,22 @@ app.get("/employees/:id", async (req, res) => {
       }
 });
 app.delete("/employees/:id", async (req, res) => {
-    const { id } = req.params;
-    const employee = await Employee.findByIdAndDelete(id);
     try{
-        return res.status(200).json(employee, { message: 'employee deleted'});
+      const empId = await Employee.findByIdAndDelete(req.params.id);
+      if(empId)
+      {
+          res.status(204).send({empId,  message: "employee deleted successfully."});
+      }
+      else
+      {
+          res.status(500).send({
+              message: "couldnt find the employee."
+          });
+      }
 
     }
     catch (err) {
-        return res.status(500).json({ message: 'could not delete employee'});
+        return res.status(500).json(err);
       }
 });
 
