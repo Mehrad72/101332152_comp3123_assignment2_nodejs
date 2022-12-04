@@ -26,17 +26,27 @@ catch (err) {
   }
 });
 
-app.get("/employees/:id", async (req, res) => {
-    const { id } = req.params;
-    const employee = await Employee.findById(id);
-    try{
-        return res.status(200).json(employee, { message: 'employee found'});
-
-    }
+app.put("/employees/:id", async (req, res) => {
+  try
+  {
+      await Employee.findByIdAndUpdate(req.params.id, req.body).then((employee) => {
+          if(employee)
+          {
+              res.status(200).send({employee,  message: "employee updated successfully."});
+          }
+          else
+          {
+              res.status(500).send({
+                  message: "couldnt find the employee."
+              });
+          }
+      })
+  }
     catch (err) {
         return res.status(500).json({ message: 'could not find employee'});
       }
 });
+
 app.delete("/employees/:id", async (req, res) => {
     try{
       const empId = await Employee.findByIdAndDelete(req.params.id);
