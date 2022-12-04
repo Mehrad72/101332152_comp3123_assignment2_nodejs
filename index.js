@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const { Employee } =require('./model.js')
 
 const app = express()
-const port = 3000
+const PORT = process.env.PORT || 5000;
 const DB_URL = 'mongodb+srv://mehrad72:yZCk4KpLViZgXQP5@data-base.6fusqhj.mongodb.net/?retryWrites=true&w=majority';
 app.use(express.json(), cors());
 
@@ -73,7 +73,7 @@ const start = async () => {
         DB_URL
       );
         console.log("Successfully connected to the database mongoDB Atlas Server");
-      app.listen(port, () => console.log(`listening at http://localhost:${port}`));
+      app.listen(process.env.PORT || 5000, () => console.log(`listening at http://localhost:${PORT}`));
     } catch (error) {
       console.error(error);
       process.exit(1);
